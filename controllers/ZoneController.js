@@ -10,11 +10,29 @@ module.exports = {
         callback(null, zones)
     })
   },
-  findById: () => {
-
+  findById: (id, callback) => {
+    Zone.findById(id, (err, zone) => {
+      if (err) {
+        callback(err, null);
+        return;
+      }
+      callback(null, zone);
+    });
   },
-  create: () => {
+  create: (params, callback) => {
+    const zips = params['zipCodes'];
+    const zip = zips.split(',');
+    const newZips = [];
+    zip.forEach(zipCode => newZips.push(zipCode.trim()));
+    params['zipCodes'] = newZips;
 
+    Zone.create(params, (err, zone) => {
+      if (err) {
+        callback(err, null);
+        return
+      }
+      callback(null, zone);
+    })
   },
   update: () => {
 
