@@ -1,25 +1,25 @@
-const webpack = require('webpack');
-const path = require('path');
+const webpack = require("webpack");
+const path = require("path");
 
 module.exports = {
   entry: {
-    app: './src/app.js',
+    app: "./src/app.js"
   },
   output: {
-    filename: 'public/build/bundle.js',
-    sourceMapFilename: 'public/build/[file].map',
-    path: path.resolve(__dirname, 'dist')
+    filename: "public/build/bundle.js",
+    sourceMapFilename: "public/build/bundle.map",
   },
-  devtool: '#source-map',
+  devtool: "#source-map",
   module: {
-    loaders: {
-      test: /\.jsx?$/,
-      exclude: /(node_modules)/,
-      loader: 'babel',
-      query: {
-        presets: ['react', 'es2015']
+    loaders: [
+      {
+        test: /\.jsx?$/,
+        exclude: /(node_modules)/,
+        loader: "babel-loader",
+        query: {
+          presets: ["react", "es2015"]
+        }
       }
-    }
+    ]
   }
-
 };
