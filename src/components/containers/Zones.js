@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import Zone from "../presentationals/Zone";
+import axios from 'axios';
 
 class Zones extends Component {
   constructor() {
@@ -12,6 +13,19 @@ class Zones extends Component {
         numComments: 0
       }
     };
+  }
+  componentDidMount() {
+    axios
+    .get('/api/zone/', {})
+    .then(response => {
+      const results = response.data.results;
+      this.setState({
+        list: results,
+      })
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
   updateZone(event) {
     console.log(

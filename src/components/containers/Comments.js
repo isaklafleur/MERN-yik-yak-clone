@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import axios from 'axios';
 import Comment from "../presentationals/Comment";
 import styles from "./styles";
 
@@ -13,6 +14,20 @@ class Comments extends Component {
         timestamp: ""
       }
     };
+  }
+
+  componentDidMount() {
+    axios
+    .get('/api/comment')
+    .then(response => {
+      const results = response.data.results;
+      this.setState({
+        list: results,
+      });
+    })
+    .catch(error => {
+      console.log(error);
+    });
   }
 
   updateUsername(event) {
