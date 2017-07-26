@@ -22536,6 +22536,8 @@ var _axios = __webpack_require__(204);
 
 var _axios2 = _interopRequireDefault(_axios);
 
+var _utils = __webpack_require__(223);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -22568,13 +22570,14 @@ var Zones = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _axios2.default.get('/api/zone/', {}).then(function (response) {
-        var results = response.data.results;
+      _utils.APIManager.get('/api/zone/', null, function (error, results) {
+        if (error) {
+          console.log('Error ' + error.message);
+          return;
+        }
         _this2.setState({
           list: results
         });
-      }).catch(function (error) {
-        console.log(error);
       });
     }
   }, {
@@ -24654,6 +24657,64 @@ module.exports = function spread(callback) {
   };
 };
 
+
+/***/ }),
+/* 223 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.APIManager = undefined;
+
+var _APIManager = __webpack_require__(224);
+
+var _APIManager2 = _interopRequireDefault(_APIManager);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.APIManager = _APIManager2.default;
+
+/***/ }),
+/* 224 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _axios = __webpack_require__(204);
+
+var _axios2 = _interopRequireDefault(_axios);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.default = {
+  get: function get(url, params, callback) {
+    _axios2.default.get(url, params).then(function (response) {
+      var confirmation = response.data.confirmation;
+      if (confirmation !== 'success') {
+        callback({ message: response.data.message }, null);
+        return;
+      }
+      callback(null, response.data.results);
+    }).catch(function (error) {
+      if (error) {
+        callback(error, null);
+        return;
+      }
+    });
+  },
+  post: function post() {},
+  put: function put() {},
+  delete: function _delete() {}
+};
 
 /***/ })
 /******/ ]);

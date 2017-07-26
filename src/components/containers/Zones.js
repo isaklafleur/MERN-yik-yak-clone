@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Zone from "../presentationals/Zone";
 import axios from 'axios';
+import { APIManager } from '../../utils/'
 
 class Zones extends Component {
   constructor() {
@@ -15,17 +16,15 @@ class Zones extends Component {
     };
   }
   componentDidMount() {
-    axios
-    .get('/api/zone/', {})
-    .then(response => {
-      const results = response.data.results;
+    APIManager.get('/api/zone/', null, (error, results) => {
+      if (error) {
+        console.log('Error '+error.message);
+        return;
+      }
       this.setState({
         list: results,
       })
     })
-    .catch(error => {
-      console.log(error);
-    });
   }
   updateZone(event) {
     console.log(
