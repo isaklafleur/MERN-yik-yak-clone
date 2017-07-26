@@ -13,7 +13,6 @@ class Zones extends Component {
       }
     };
   }
-
   updateZone(event) {
     console.log(
       "updateZone: " + event.target.id + " === " + event.target.value
