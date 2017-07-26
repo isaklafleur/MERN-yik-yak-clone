@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Zone from "./Zone";
+import Zone from "../presentationals/Zone";
 
 class Zones extends Component {
   constructor() {

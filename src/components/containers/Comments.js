@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Comment from "./Comment";
+import Comment from "../presentationals/Comment";
 import styles from './styles';
 
 class Comments extends Component {
@@ -14,6 +14,10 @@ class Comments extends Component {
       ]
     };
   }
+  submitComment() {
+    console.log('submitComment');
+  }
+
   render() {
     const style = styles.comment;
     const commentList = this.state.list.map((comment, i) => {
@@ -30,6 +34,9 @@ class Comments extends Component {
           <ul style={style.commentsList}>
             { commentList }
           </ul>
+          <input className="form-control" type="text" placeholder="Username" /><br />
+          <input className="form-control" type="text" placeholder="Comment" /><br />
+          <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
         </div>
       </div>
     );
