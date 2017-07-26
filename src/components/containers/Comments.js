@@ -1,21 +1,54 @@
 import React, { Component } from "react";
 import Comment from "../presentationals/Comment";
-import styles from './styles';
+import styles from "./styles";
 
 class Comments extends Component {
   constructor() {
     super();
     this.state = {
-      list: [
-        { username: "Pelle", body: "sdsdsdsdsbvbvbdsd", timestamp: "10:30" },
-        { username: "Kalle", body: "sdsdsdsdsdssds2323rd", timestamp: "11:30" },
-        { username: "Putte", body: "sdsd34334sdsdsdsd", timestamp: "10:34" },
-        { username: "Dino", body: "ssdsddsdsdsdsdsd", timestamp: "14:30" }
-      ]
+      list: [],
+      comment: {
+        username: "",
+        body: "",
+        timestamp: ""
+      }
     };
   }
+
+  updateUsername(event) {
+    // console.log('updateUsername ' + event.target.value);
+    const updatedComment = Object.assign({}, this.state.comment);
+    updatedComment["username"] = event.target.value;
+    this.setState({
+      comment: updatedComment
+    });
+  }
+
+  updateBody(event) {
+    // console.log('updateComment ' + event.target.value);
+    const updatedComment = Object.assign({}, this.state.comment);
+    updatedComment["body"] = event.target.value;
+    this.setState({
+      comment: updatedComment
+    });
+  }
+
+  updateTimestamp(event) {
+    const updatedComment = Object.assign({}, this.state.comment);
+    updatedComment["timestamp"] = event.target.value;
+    this.setState({
+      comment: updatedComment
+    });
+  }
+
   submitComment() {
-    console.log('submitComment');
+    console.log("submitComment " + JSON.stringify(this.state.comment, null, 2));
+    const updatedList = Object.assign([], this.state.list);
+    updatedList.push(this.state.comment);
+
+    this.setState({
+      list: updatedList
+    });
   }
 
   render() {
@@ -32,11 +65,35 @@ class Comments extends Component {
         <h2>Comments: Zone 1</h2>
         <div style={style.commentsBox}>
           <ul style={style.commentsList}>
-            { commentList }
+            {commentList}
           </ul>
-          <input className="form-control" type="text" placeholder="Username" /><br />
-          <input className="form-control" type="text" placeholder="Comment" /><br />
-          <button onClick={this.submitComment.bind(this)} className="btn btn-info">Submit Comment</button>
+          <input
+            onChange={this.updateUsername.bind(this)}
+            className="form-control"
+            type="text"
+            placeholder="Username"
+          />
+          <br />
+          <input
+            onChange={this.updateBody.bind(this)}
+            className="form-control"
+            type="text"
+            placeholder="Comment"
+          />
+          <br />
+          <input
+            onChange={this.updateTimestamp.bind(this)}
+            className="form-control"
+            type="text"
+            placeholder="Timestamp"
+          />
+          <br />
+          <button
+            onClick={this.submitComment.bind(this)}
+            className="btn btn-info"
+          >
+            Submit Comment
+          </button>
         </div>
       </div>
     );

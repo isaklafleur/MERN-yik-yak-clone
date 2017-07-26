@@ -11,7 +11,16 @@ class Zone extends Component {
             {this.props.currentZone.name}
           </a>
         </h2>
-        <span className="detail">{this.props.currentZone.zipCode}</span>
+        <span className="detail">
+          <ul>
+          {this.props.currentZone.zipCodes.map((zipcode, i) => {
+            return (
+              <li key={i}>{zipcode}</li>
+            );
+          })}
+          </ul>
+          
+        </span>
         <br />
         <span className="detail">{this.props.currentZone.numComments} comments</span>
       </div>

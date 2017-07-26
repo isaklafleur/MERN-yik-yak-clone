@@ -5,14 +5,51 @@ class Zones extends Component {
   constructor() {
     super();
     this.state = {
-      list: [
-        { name: "Zone 1", zipCode: "10011", numComments: 5 },
-        { name: "Zone 2", zipCode: "10012", numComments: 21 },
-        { name: "Zone 3", zipCode: "10013", numComments: 22 },
-        { name: "Zone 4", zipCode: "10014", numComments: 33 },
-        { name: "Zone 5", zipCode: "10015", numComments: 22 },
-      ]
+      list: [],
+      zone: {
+        name: "",
+        zipCodes: [],
+        numComments: 0
+      }
     };
+  }
+
+  updateZone(event) {
+    console.log(
+      "updateZone: " + event.target.id + " === " + event.target.value
+    );
+    let updatedZone = Object.assign({}, this.state.zone);
+    updatedZone[event.target.id] = event.target.value;
+    this.setState({
+      zone: updatedZone
+    });
+  }
+  updateName(event) {
+    // console.log("updateName " + event.target.value);
+    const updatedZone = Object.assign({}, this.state.zone);
+    updatedZone["name"] = event.target.value;
+    this.setState({
+      zone: updatedZone
+    });
+  }
+  updateZipCodes(event) {
+    // console.log("updateZipCodes " + event.target.value);
+    const newZips = [];
+    const zipArray = event.target.value.split(",");
+    zipArray.forEach(zipCode => newZips.push(zipCode.trim()));
+    const updatedZone = Object.assign({}, this.state.zone);
+    updatedZone["zipCodes"] = newZips;
+    this.setState({
+      zone: updatedZone
+    });
+  }
+  addZone() {
+    console.log("submitZone " + JSON.stringify(this.state.zone, null, 2));
+    const updatedList = Object.assign([], this.state.list);
+    updatedList.push(this.state.zone);
+    this.setState({
+      list: updatedList
+    });
   }
   render() {
     const listItems = this.state.list.map((zone, i) => {
@@ -27,6 +64,23 @@ class Zones extends Component {
         <ol>
           {listItems}
         </ol>
+        <input
+          onChange={this.updateName.bind(this)}
+          id="name"
+          className="form-control"
+          type="text"
+          placeholder="Name"
+        />
+        <input
+          id="zipCodes"
+          onChange={this.updateZipCodes.bind(this)}
+          className="form-control"
+          type="text"
+          placeholder="ZipCodes"
+        />
+        <button onClick={this.addZone.bind(this)} className="btn btn-danger">
+          Add Zone
+        </button>
       </div>
     );
   }
