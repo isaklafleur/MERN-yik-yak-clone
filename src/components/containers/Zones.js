@@ -1,17 +1,12 @@
 import React, { Component } from "react";
-import { Zone } from "../presentationals/";
+import { CreateZone, Zone } from "../presentationals/";
 import { APIManager } from "../../utils/";
 
 class Zones extends Component {
   constructor() {
     super();
     this.state = {
-      list: [],
-      zone: {
-        name: "",
-        zipCodes: [],
-        numComments: 0
-      }
+      list: []
     };
   }
   componentDidMount() {
@@ -25,30 +20,17 @@ class Zones extends Component {
       });
     });
   }
-  updateZone(event) {
-    // console.log("updateZone: " + event.target.id + " === " + event.target.value);
-    let updatedZone = Object.assign({}, this.state.zone);
-    updatedZone[event.target.id] = event.target.value.trim();
-    this.setState({
-      zone: updatedZone
-    });
-  }
-  addZone() {
-    const updatedZone = Object.assign({}, this.state.zone);
-    updatedZone["zipCodes"] = updatedZone.zipCodes.split(",");
-    const newZips = [];
-    updatedZone["zipCodes"].forEach(zipCode => newZips.push(zipCode.trim()));
-    updatedZone["zipCodes"] = newZips;
-    APIManager.post("/api/zone", updatedZone, (error, response) => {
+  addZone(zone) {
+    APIManager.post("/api/zone", zone, (error, response) => {
       if (error) {
-        console.log("Error " + error.message);
+        console.log("Error " + JSON.stringify(error.message, null, 2));
         return;
       }
-      console.log("Zone Created: " + JSON.stringify(response));
       const updatedList = Object.assign([], this.state.list);
       updatedList.push(response.result);
+
       this.setState({
-        list: updatedList,
+        list: updatedList
       });
     });
   }
@@ -65,23 +47,7 @@ class Zones extends Component {
         <ol>
           {listItems}
         </ol>
-        <input
-          onChange={this.updateZone.bind(this)}
-          id="name"
-          className="form-control"
-          type="text"
-          placeholder="Name"
-        />
-        <input
-          id="zipCodes"
-          onChange={this.updateZone.bind(this)}
-          className="form-control"
-          type="text"
-          placeholder="ZipCodes"
-        />
-        <button onClick={this.addZone.bind(this)} className="btn btn-danger">
-          Add Zone
-        </button>
+        <CreateZone onCreate={this.addZone.bind(this)} />
       </div>
     );
   }

@@ -22,7 +22,6 @@ class Comments extends Component {
     });
   }
   addComment(comment) {
-    console.log('addComment: '+JSON.stringify(comment));
     APIManager.post("/api/comment", comment, (error, response) => {
       if (error) {
         console.log("Error " + JSON.stringify(error.message, null, 2));

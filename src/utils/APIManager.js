@@ -33,7 +33,7 @@ export default {
       callback(null, response.data);
     })
     .catch((error) => {
-      // console.log(error)
+      console.log(error)
       if (error) {
         callback(error, null);
         return;

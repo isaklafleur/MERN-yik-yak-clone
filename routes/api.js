@@ -71,11 +71,11 @@ router.post("/:resource/", (req, res, next) => {
     });
     return;
   }
-  controller.create(req.body, (err, result) => {
-    if (err) {
+  controller.create(req.body, (error, result) => {
+    if (error) {
       res.json({
         confirmation: "fail",
-        message: err
+        message: error
       });
       return;
     }
