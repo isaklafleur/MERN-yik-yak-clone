@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import axios from 'axios';
+import { APIManager } from "../../utils/";
 import Comment from "../presentationals/Comment";
 import styles from "./styles";
 
@@ -10,59 +10,42 @@ class Comments extends Component {
       list: [],
       comment: {
         username: "",
-        body: "",
-        timestamp: ""
+        body: ""
       }
     };
   }
-
   componentDidMount() {
-    axios
-    .get('/api/comment')
-    .then(response => {
-      const results = response.data.results;
+    APIManager.get("/api/comment", null, (error, response) => {
+      if (error) {
+        console.log("Error " + error.message);
+        return;
+      }
       this.setState({
-        list: results,
+        list: response.results
       });
-    })
-    .catch(error => {
-      console.log(error);
     });
   }
-
-  updateUsername(event) {
-    // console.log('updateUsername ' + event.target.value);
-    const updatedComment = Object.assign({}, this.state.comment);
-    updatedComment["username"] = event.target.value;
+  updateComment(event) {
+    console.log(
+      "updateComment: " + event.target.id + " === " + event.target.value
+    );
+    let updatedComment = Object.assign({}, this.state.comment);
+    updatedComment[event.target.id] = event.target.value.trim();
     this.setState({
       comment: updatedComment
     });
   }
-
-  updateBody(event) {
-    // console.log('updateComment ' + event.target.value);
-    const updatedComment = Object.assign({}, this.state.comment);
-    updatedComment["body"] = event.target.value;
-    this.setState({
-      comment: updatedComment
-    });
-  }
-
-  updateTimestamp(event) {
-    const updatedComment = Object.assign({}, this.state.comment);
-    updatedComment["timestamp"] = event.target.value;
-    this.setState({
-      comment: updatedComment
-    });
-  }
-
-  submitComment() {
-    console.log("submitComment " + JSON.stringify(this.state.comment, null, 2));
-    const updatedList = Object.assign([], this.state.list);
-    updatedList.push(this.state.comment);
-
-    this.setState({
-      list: updatedList
+  addComment() {
+    APIManager.post("/api/comment", this.state.comment, (error, response) => {
+      if (error) {
+        console.log("Error " + JSON.stringify(error.message, null, 2));
+        return;
+      }
+      const updatedList = Object.assign([], this.state.list);
+      updatedList.push(response.result);
+      this.setState({
+        list: updatedList,
+      });
     });
   }
 
@@ -83,31 +66,23 @@ class Comments extends Component {
             {commentList}
           </ul>
           <input
-            onChange={this.updateUsername.bind(this)}
+            id="username"
+            onChange={this.updateComment.bind(this)}
             className="form-control"
             type="text"
             placeholder="Username"
           />
           <br />
           <input
-            onChange={this.updateBody.bind(this)}
+            id="body"
+            onChange={this.updateComment.bind(this)}
             className="form-control"
             type="text"
             placeholder="Comment"
           />
           <br />
-          <input
-            onChange={this.updateTimestamp.bind(this)}
-            className="form-control"
-            type="text"
-            placeholder="Timestamp"
-          />
-          <br />
-          <button
-            onClick={this.submitComment.bind(this)}
-            className="btn btn-info"
-          >
-            Submit Comment
+          <button onClick={this.addComment.bind(this)} className="btn btn-info">
+            Add Comment
           </button>
         </div>
       </div>

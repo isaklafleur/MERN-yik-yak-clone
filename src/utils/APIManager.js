@@ -6,11 +6,11 @@ export default {
     .get(url, params)
     .then(response => {
       const confirmation = response.data.confirmation;
-      if(confirmation !== 'success') {
+      if (confirmation !== 'success') {
         callback({message: response.data.message}, null);
         return;
       }
-      callback(null, response.data.results);
+      callback(null, response.data);
 
     })
     .catch(error => {
@@ -21,7 +21,24 @@ export default {
     });
 
   },
-  post: () => {
+  post: (url, body, callback) => {
+    axios
+    .post(url, body)
+    .then((response) => {
+      const confirmation = response.data.confirmation;
+      if (confirmation !== 'success') {
+        callback({message: response.data.message}, null);
+        return;
+      }
+      callback(null, response.data);
+    })
+    .catch((error) => {
+      // console.log(error)
+      if (error) {
+        callback(error, null);
+        return;
+      }
+    });
 
   },
   put: () => {

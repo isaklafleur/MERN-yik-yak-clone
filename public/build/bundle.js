@@ -22532,10 +22532,6 @@ var _Zone = __webpack_require__(193);
 
 var _Zone2 = _interopRequireDefault(_Zone);
 
-var _axios = __webpack_require__(204);
-
-var _axios2 = _interopRequireDefault(_axios);
-
 var _utils = __webpack_require__(223);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -22570,47 +22566,22 @@ var Zones = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _utils.APIManager.get('/api/zone/', null, function (error, results) {
+      _utils.APIManager.get("/api/zone/", null, function (error, response) {
         if (error) {
-          console.log('Error ' + error.message);
+          console.log("Error " + error.message);
           return;
         }
         _this2.setState({
-          list: results
+          list: response.results
         });
       });
     }
   }, {
     key: "updateZone",
     value: function updateZone(event) {
-      console.log("updateZone: " + event.target.id + " === " + event.target.value);
+      // console.log("updateZone: " + event.target.id + " === " + event.target.value);
       var updatedZone = Object.assign({}, this.state.zone);
-      updatedZone[event.target.id] = event.target.value;
-      this.setState({
-        zone: updatedZone
-      });
-    }
-  }, {
-    key: "updateName",
-    value: function updateName(event) {
-      // console.log("updateName " + event.target.value);
-      var updatedZone = Object.assign({}, this.state.zone);
-      updatedZone["name"] = event.target.value;
-      this.setState({
-        zone: updatedZone
-      });
-    }
-  }, {
-    key: "updateZipCodes",
-    value: function updateZipCodes(event) {
-      // console.log("updateZipCodes " + event.target.value);
-      var newZips = [];
-      var zipArray = event.target.value.split(",");
-      zipArray.forEach(function (zipCode) {
-        return newZips.push(zipCode.trim());
-      });
-      var updatedZone = Object.assign({}, this.state.zone);
-      updatedZone["zipCodes"] = newZips;
+      updatedZone[event.target.id] = event.target.value.trim();
       this.setState({
         zone: updatedZone
       });
@@ -22618,11 +22589,26 @@ var Zones = function (_Component) {
   }, {
     key: "addZone",
     value: function addZone() {
-      console.log("submitZone " + JSON.stringify(this.state.zone, null, 2));
-      var updatedList = Object.assign([], this.state.list);
-      updatedList.push(this.state.zone);
-      this.setState({
-        list: updatedList
+      var _this3 = this;
+
+      var updatedZone = Object.assign({}, this.state.zone);
+      updatedZone["zipCodes"] = updatedZone.zipCodes.split(",");
+      var newZips = [];
+      updatedZone["zipCodes"].forEach(function (zipCode) {
+        return newZips.push(zipCode.trim());
+      });
+      updatedZone["zipCodes"] = newZips;
+      _utils.APIManager.post("/api/zone", updatedZone, function (error, response) {
+        if (error) {
+          console.log("Error " + error.message);
+          return;
+        }
+        console.log("Zone Created: " + JSON.stringify(response));
+        var updatedList = Object.assign([], _this3.state.list);
+        updatedList.push(response.result);
+        _this3.setState({
+          list: updatedList
+        });
       });
     }
   }, {
@@ -22644,7 +22630,7 @@ var Zones = function (_Component) {
           listItems
         ),
         _react2.default.createElement("input", {
-          onChange: this.updateName.bind(this),
+          onChange: this.updateZone.bind(this),
           id: "name",
           className: "form-control",
           type: "text",
@@ -22652,7 +22638,7 @@ var Zones = function (_Component) {
         }),
         _react2.default.createElement("input", {
           id: "zipCodes",
-          onChange: this.updateZipCodes.bind(this),
+          onChange: this.updateZone.bind(this),
           className: "form-control",
           type: "text",
           placeholder: "ZipCodes"
@@ -22688,9 +22674,7 @@ var _react = __webpack_require__(32);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _axios = __webpack_require__(204);
-
-var _axios2 = _interopRequireDefault(_axios);
+var _utils = __webpack_require__(223);
 
 var _Comment = __webpack_require__(194);
 
@@ -22720,8 +22704,7 @@ var Comments = function (_Component) {
       list: [],
       comment: {
         username: "",
-        body: "",
-        timestamp: ""
+        body: ""
       }
     };
     return _this;
@@ -22732,53 +22715,41 @@ var Comments = function (_Component) {
     value: function componentDidMount() {
       var _this2 = this;
 
-      _axios2.default.get('/api/comment').then(function (response) {
-        var results = response.data.results;
+      _utils.APIManager.get("/api/comment", null, function (error, response) {
+        if (error) {
+          console.log("Error " + error.message);
+          return;
+        }
         _this2.setState({
-          list: results
+          list: response.results
         });
-      }).catch(function (error) {
-        console.log(error);
       });
     }
   }, {
-    key: "updateUsername",
-    value: function updateUsername(event) {
-      // console.log('updateUsername ' + event.target.value);
+    key: "updateComment",
+    value: function updateComment(event) {
+      console.log("updateComment: " + event.target.id + " === " + event.target.value);
       var updatedComment = Object.assign({}, this.state.comment);
-      updatedComment["username"] = event.target.value;
+      updatedComment[event.target.id] = event.target.value.trim();
       this.setState({
         comment: updatedComment
       });
     }
   }, {
-    key: "updateBody",
-    value: function updateBody(event) {
-      // console.log('updateComment ' + event.target.value);
-      var updatedComment = Object.assign({}, this.state.comment);
-      updatedComment["body"] = event.target.value;
-      this.setState({
-        comment: updatedComment
-      });
-    }
-  }, {
-    key: "updateTimestamp",
-    value: function updateTimestamp(event) {
-      var updatedComment = Object.assign({}, this.state.comment);
-      updatedComment["timestamp"] = event.target.value;
-      this.setState({
-        comment: updatedComment
-      });
-    }
-  }, {
-    key: "submitComment",
-    value: function submitComment() {
-      console.log("submitComment " + JSON.stringify(this.state.comment, null, 2));
-      var updatedList = Object.assign([], this.state.list);
-      updatedList.push(this.state.comment);
+    key: "addComment",
+    value: function addComment() {
+      var _this3 = this;
 
-      this.setState({
-        list: updatedList
+      _utils.APIManager.post("/api/comment", this.state.comment, function (error, response) {
+        if (error) {
+          console.log("Error " + JSON.stringify(error.message, null, 2));
+          return;
+        }
+        var updatedList = Object.assign([], _this3.state.list);
+        updatedList.push(response.result);
+        _this3.setState({
+          list: updatedList
+        });
       });
     }
   }, {
@@ -22809,33 +22780,25 @@ var Comments = function (_Component) {
             commentList
           ),
           _react2.default.createElement("input", {
-            onChange: this.updateUsername.bind(this),
+            id: "username",
+            onChange: this.updateComment.bind(this),
             className: "form-control",
             type: "text",
             placeholder: "Username"
           }),
           _react2.default.createElement("br", null),
           _react2.default.createElement("input", {
-            onChange: this.updateBody.bind(this),
+            id: "body",
+            onChange: this.updateComment.bind(this),
             className: "form-control",
             type: "text",
             placeholder: "Comment"
           }),
           _react2.default.createElement("br", null),
-          _react2.default.createElement("input", {
-            onChange: this.updateTimestamp.bind(this),
-            className: "form-control",
-            type: "text",
-            placeholder: "Timestamp"
-          }),
-          _react2.default.createElement("br", null),
           _react2.default.createElement(
             "button",
-            {
-              onClick: this.submitComment.bind(this),
-              className: "btn btn-info"
-            },
-            "Submit Comment"
+            { onClick: this.addComment.bind(this), className: "btn btn-info" },
+            "Add Comment"
           )
         )
       );
@@ -24703,7 +24666,7 @@ exports.default = {
         callback({ message: response.data.message }, null);
         return;
       }
-      callback(null, response.data.results);
+      callback(null, response.data);
     }).catch(function (error) {
       if (error) {
         callback(error, null);
@@ -24711,7 +24674,22 @@ exports.default = {
       }
     });
   },
-  post: function post() {},
+  post: function post(url, body, callback) {
+    _axios2.default.post(url, body).then(function (response) {
+      var confirmation = response.data.confirmation;
+      if (confirmation !== 'success') {
+        callback({ message: response.data.message }, null);
+        return;
+      }
+      callback(null, response.data);
+    }).catch(function (error) {
+      // console.log(error)
+      if (error) {
+        callback(error, null);
+        return;
+      }
+    });
+  },
   put: function put() {},
   delete: function _delete() {}
 };

@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Zone from "../presentationals/Zone";
-import axios from 'axios';
-import { APIManager } from '../../utils/'
+import { APIManager } from "../../utils/";
 
 class Zones extends Component {
   constructor() {
@@ -16,51 +15,41 @@ class Zones extends Component {
     };
   }
   componentDidMount() {
-    APIManager.get('/api/zone/', null, (error, results) => {
+    APIManager.get("/api/zone/", null, (error, response) => {
       if (error) {
-        console.log('Error '+error.message);
+        console.log("Error " + error.message);
         return;
       }
       this.setState({
-        list: results,
-      })
-    })
+        list: response.results
+      });
+    });
   }
   updateZone(event) {
-    console.log(
-      "updateZone: " + event.target.id + " === " + event.target.value
-    );
+    // console.log("updateZone: " + event.target.id + " === " + event.target.value);
     let updatedZone = Object.assign({}, this.state.zone);
-    updatedZone[event.target.id] = event.target.value;
-    this.setState({
-      zone: updatedZone
-    });
-  }
-  updateName(event) {
-    // console.log("updateName " + event.target.value);
-    const updatedZone = Object.assign({}, this.state.zone);
-    updatedZone["name"] = event.target.value;
-    this.setState({
-      zone: updatedZone
-    });
-  }
-  updateZipCodes(event) {
-    // console.log("updateZipCodes " + event.target.value);
-    const newZips = [];
-    const zipArray = event.target.value.split(",");
-    zipArray.forEach(zipCode => newZips.push(zipCode.trim()));
-    const updatedZone = Object.assign({}, this.state.zone);
-    updatedZone["zipCodes"] = newZips;
+    updatedZone[event.target.id] = event.target.value.trim();
     this.setState({
       zone: updatedZone
     });
   }
   addZone() {
-    console.log("submitZone " + JSON.stringify(this.state.zone, null, 2));
-    const updatedList = Object.assign([], this.state.list);
-    updatedList.push(this.state.zone);
-    this.setState({
-      list: updatedList
+    const updatedZone = Object.assign({}, this.state.zone);
+    updatedZone["zipCodes"] = updatedZone.zipCodes.split(",");
+    const newZips = [];
+    updatedZone["zipCodes"].forEach(zipCode => newZips.push(zipCode.trim()));
+    updatedZone["zipCodes"] = newZips;
+    APIManager.post("/api/zone", updatedZone, (error, response) => {
+      if (error) {
+        console.log("Error " + error.message);
+        return;
+      }
+      console.log("Zone Created: " + JSON.stringify(response));
+      const updatedList = Object.assign([], this.state.list);
+      updatedList.push(response.result);
+      this.setState({
+        list: updatedList,
+      });
     });
   }
   render() {
@@ -77,7 +66,7 @@ class Zones extends Component {
           {listItems}
         </ol>
         <input
-          onChange={this.updateName.bind(this)}
+          onChange={this.updateZone.bind(this)}
           id="name"
           className="form-control"
           type="text"
@@ -85,7 +74,7 @@ class Zones extends Component {
         />
         <input
           id="zipCodes"
-          onChange={this.updateZipCodes.bind(this)}
+          onChange={this.updateZone.bind(this)}
           className="form-control"
           type="text"
           placeholder="ZipCodes"
