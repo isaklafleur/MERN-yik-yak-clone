@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Zone from "../presentationals/Zone";
+import { Zone } from "../presentationals/";
 import { APIManager } from "../../utils/";
 
 class Zones extends Component {

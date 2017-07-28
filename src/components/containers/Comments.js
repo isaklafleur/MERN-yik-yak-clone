@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { APIManager } from "../../utils/";
-import Comment from "../presentationals/Comment";
+import { Comment, CreateComment } from "../presentationals/";
 import styles from "./styles";
 
 class Comments extends Component {
@@ -8,10 +8,6 @@ class Comments extends Component {
     super();
     this.state = {
       list: [],
-      comment: {
-        username: "",
-        body: ""
-      }
     };
   }
   componentDidMount() {
@@ -25,18 +21,9 @@ class Comments extends Component {
       });
     });
   }
-  updateComment(event) {
-    console.log(
-      "updateComment: " + event.target.id + " === " + event.target.value
-    );
-    let updatedComment = Object.assign({}, this.state.comment);
-    updatedComment[event.target.id] = event.target.value.trim();
-    this.setState({
-      comment: updatedComment
-    });
-  }
-  addComment() {
-    APIManager.post("/api/comment", this.state.comment, (error, response) => {
+  addComment(comment) {
+    console.log('addComment: '+JSON.stringify(comment));
+    APIManager.post("/api/comment", comment, (error, response) => {
       if (error) {
         console.log("Error " + JSON.stringify(error.message, null, 2));
         return;
@@ -44,7 +31,7 @@ class Comments extends Component {
       const updatedList = Object.assign([], this.state.list);
       updatedList.push(response.result);
       this.setState({
-        list: updatedList,
+        list: updatedList
       });
     });
   }
@@ -65,25 +52,7 @@ class Comments extends Component {
           <ul style={style.commentsList}>
             {commentList}
           </ul>
-          <input
-            id="username"
-            onChange={this.updateComment.bind(this)}
-            className="form-control"
-            type="text"
-            placeholder="Username"
-          />
-          <br />
-          <input
-            id="body"
-            onChange={this.updateComment.bind(this)}
-            className="form-control"
-            type="text"
-            placeholder="Comment"
-          />
-          <br />
-          <button onClick={this.addComment.bind(this)} className="btn btn-info">
-            Add Comment
-          </button>
+          <CreateComment onCreate={this.addComment.bind(this)} />
         </div>
       </div>
     );

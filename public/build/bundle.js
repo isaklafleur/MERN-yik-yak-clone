@@ -22528,9 +22528,7 @@ var _react = __webpack_require__(32);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _Zone = __webpack_require__(193);
-
-var _Zone2 = _interopRequireDefault(_Zone);
+var _presentationals = __webpack_require__(225);
 
 var _utils = __webpack_require__(223);
 
@@ -22618,7 +22616,7 @@ var Zones = function (_Component) {
         return _react2.default.createElement(
           "li",
           { key: i },
-          _react2.default.createElement(_Zone2.default, { currentZone: zone })
+          _react2.default.createElement(_presentationals.Zone, { currentZone: zone })
         );
       });
       return _react2.default.createElement(
@@ -22676,9 +22674,7 @@ var _react2 = _interopRequireDefault(_react);
 
 var _utils = __webpack_require__(223);
 
-var _Comment = __webpack_require__(194);
-
-var _Comment2 = _interopRequireDefault(_Comment);
+var _presentationals = __webpack_require__(225);
 
 var _styles = __webpack_require__(195);
 
@@ -22701,11 +22697,7 @@ var Comments = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Comments.__proto__ || Object.getPrototypeOf(Comments)).call(this));
 
     _this.state = {
-      list: [],
-      comment: {
-        username: "",
-        body: ""
-      }
+      list: []
     };
     return _this;
   }
@@ -22726,21 +22718,12 @@ var Comments = function (_Component) {
       });
     }
   }, {
-    key: "updateComment",
-    value: function updateComment(event) {
-      console.log("updateComment: " + event.target.id + " === " + event.target.value);
-      var updatedComment = Object.assign({}, this.state.comment);
-      updatedComment[event.target.id] = event.target.value.trim();
-      this.setState({
-        comment: updatedComment
-      });
-    }
-  }, {
     key: "addComment",
-    value: function addComment() {
+    value: function addComment(comment) {
       var _this3 = this;
 
-      _utils.APIManager.post("/api/comment", this.state.comment, function (error, response) {
+      console.log('addComment: ' + JSON.stringify(comment));
+      _utils.APIManager.post("/api/comment", comment, function (error, response) {
         if (error) {
           console.log("Error " + JSON.stringify(error.message, null, 2));
           return;
@@ -22760,7 +22743,7 @@ var Comments = function (_Component) {
         return _react2.default.createElement(
           "li",
           { key: i },
-          _react2.default.createElement(_Comment2.default, { currentComment: comment })
+          _react2.default.createElement(_presentationals.Comment, { currentComment: comment })
         );
       });
       return _react2.default.createElement(
@@ -22779,27 +22762,7 @@ var Comments = function (_Component) {
             { style: style.commentsList },
             commentList
           ),
-          _react2.default.createElement("input", {
-            id: "username",
-            onChange: this.updateComment.bind(this),
-            className: "form-control",
-            type: "text",
-            placeholder: "Username"
-          }),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement("input", {
-            id: "body",
-            onChange: this.updateComment.bind(this),
-            className: "form-control",
-            type: "text",
-            placeholder: "Comment"
-          }),
-          _react2.default.createElement("br", null),
-          _react2.default.createElement(
-            "button",
-            { onClick: this.addComment.bind(this), className: "btn btn-info" },
-            "Add Comment"
-          )
+          _react2.default.createElement(_presentationals.CreateComment, { onCreate: this.addComment.bind(this) })
         )
       );
     }
@@ -24693,6 +24656,129 @@ exports.default = {
   put: function put() {},
   delete: function _delete() {}
 };
+
+/***/ }),
+/* 225 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.Zone = exports.Comment = exports.CreateComment = undefined;
+
+var _CreateComment = __webpack_require__(226);
+
+var _CreateComment2 = _interopRequireDefault(_CreateComment);
+
+var _Comment = __webpack_require__(194);
+
+var _Comment2 = _interopRequireDefault(_Comment);
+
+var _Zone = __webpack_require__(193);
+
+var _Zone2 = _interopRequireDefault(_Zone);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+exports.CreateComment = _CreateComment2.default;
+exports.Comment = _Comment2.default;
+exports.Zone = _Zone2.default;
+
+/***/ }),
+/* 226 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(32);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CreateComment = function (_Component) {
+  _inherits(CreateComment, _Component);
+
+  function CreateComment() {
+    _classCallCheck(this, CreateComment);
+
+    var _this = _possibleConstructorReturn(this, (CreateComment.__proto__ || Object.getPrototypeOf(CreateComment)).call(this));
+
+    _this.state = {
+      comment: {
+        username: '',
+        body: ''
+      }
+    };
+    return _this;
+  }
+
+  _createClass(CreateComment, [{
+    key: 'updateComment',
+    value: function updateComment(event) {
+      var updatedComment = Object.assign({}, this.state.comment);
+      updatedComment[event.target.id] = event.target.value;
+      this.setState({
+        comment: updatedComment
+      });
+    }
+  }, {
+    key: 'addComment',
+    value: function addComment(event) {
+      // console.log('submitComment '+JSON.stringify(this.state.comment));
+      this.props.onCreate(this.state.comment);
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        null,
+        _react2.default.createElement('input', {
+          id: 'username',
+          onChange: this.updateComment.bind(this),
+          className: 'form-control',
+          type: 'text',
+          placeholder: 'Username'
+        }),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement('input', {
+          id: 'body',
+          onChange: this.updateComment.bind(this),
+          className: 'form-control',
+          type: 'text',
+          placeholder: 'Comment'
+        }),
+        _react2.default.createElement('br', null),
+        _react2.default.createElement(
+          'button',
+          { onClick: this.addComment.bind(this), className: 'btn btn-info' },
+          'Add Comment'
+        )
+      );
+    }
+  }]);
+
+  return CreateComment;
+}(_react.Component);
+
+exports.default = CreateComment;
 
 /***/ })
 /******/ ]);
