@@ -22549,6 +22549,7 @@ var Zones = function (_Component) {
     var _this = _possibleConstructorReturn(this, (Zones.__proto__ || Object.getPrototypeOf(Zones)).call(this));
 
     _this.state = {
+      selected: 0,
       list: []
     };
     return _this;
@@ -22588,13 +22589,24 @@ var Zones = function (_Component) {
       });
     }
   }, {
+    key: "selectZone",
+    value: function selectZone(index) {
+      // console.log('selectZone '+index);
+      this.setState({
+        selected: index
+      });
+    }
+  }, {
     key: "render",
     value: function render() {
+      var _this4 = this;
+
       var listItems = this.state.list.map(function (zone, i) {
+        var selected = i === _this4.state.selected;
         return _react2.default.createElement(
           "li",
           { key: i },
-          _react2.default.createElement(_presentationals.Zone, { currentZone: zone })
+          _react2.default.createElement(_presentationals.Zone, { index: i, select: _this4.selectZone.bind(_this4), isSelected: selected, currentZone: zone })
         );
       });
       return _react2.default.createElement(
@@ -22771,20 +22783,32 @@ var Zone = function (_Component) {
   }
 
   _createClass(Zone, [{
+    key: "onSelectTitle",
+    value: function onSelectTitle(event) {
+      event.preventDefault();
+      // console.log('onSelectTitle ' + this.props.index);
+      this.props.select(this.props.index);
+    }
+  }, {
     key: "render",
     value: function render() {
       var zoneStyle = _styles2.default.zone;
+      var title = this.props.isSelected ? _react2.default.createElement(
+        "a",
+        { style: zoneStyle.title, href: "#" },
+        this.props.currentZone.name
+      ) : _react2.default.createElement(
+        "a",
+        { href: "#" },
+        this.props.currentZone.name
+      );
       return _react2.default.createElement(
         "div",
         { style: zoneStyle.container },
         _react2.default.createElement(
           "h2",
-          { style: zoneStyle.marginBottom },
-          _react2.default.createElement(
-            "a",
-            { style: zoneStyle.title, href: "#" },
-            this.props.currentZone.name
-          )
+          { onClick: this.onSelectTitle.bind(this), style: zoneStyle.marginBottom },
+          title
         ),
         _react2.default.createElement(
           "span",
